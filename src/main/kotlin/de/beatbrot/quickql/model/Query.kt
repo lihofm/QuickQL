@@ -1,17 +1,12 @@
 package de.beatbrot.quickql.model
 
 abstract class Query {
-    val ql = QueryBuilder(this)
-    var elements: List<InnerQuery> = ArrayList()
+    val ql = QueryBuilder()
+    var elements: List<InnerQuery> = emptyList()
 
-
-    operator fun invoke(any: Query.() -> Unit) {
-        any.invoke(this)
-    }
-
-
-    operator fun plusAssign(add: InnerQuery) {
-        elements += add
+    protected fun fetchElementsFromFunction(query: Query.() -> Unit) {
+        query.invoke(this)
+        elements = ql.queries
     }
 
     override fun toString(): String {

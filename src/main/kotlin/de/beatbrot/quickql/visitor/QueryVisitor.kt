@@ -3,7 +3,7 @@ package de.beatbrot.quickql.visitor
 import de.beatbrot.quickql.model.InnerQuery
 import de.beatbrot.quickql.model.RootQuery
 
-open class QueryVisitor(private val rootQuery: RootQuery) {
+abstract class QueryVisitor(private val rootQuery: RootQuery) {
 
     fun visitAll() {
         visitRootQuery(rootQuery)
@@ -20,6 +20,4 @@ open class QueryVisitor(private val rootQuery: RootQuery) {
             visitQuery(it, level + 1)
         }
     }
-
-
 }

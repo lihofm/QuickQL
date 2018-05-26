@@ -4,12 +4,8 @@ import de.beatbrot.quickql.model.InnerQuery
 import de.beatbrot.quickql.model.RootQuery
 import java.util.*
 
-class GraphQLVisitor(rootQuery: RootQuery) : QueryVisitor(rootQuery) {
+class GraphQLVisitor(rootQuery: RootQuery, private val indent: String = "    ") : QueryVisitor(rootQuery) {
     private val builder: StringBuilder = StringBuilder()
-
-    companion object {
-        private const val indent = "    " // 4 Spaces
-    }
 
     fun generate(): String {
         visitAll()
@@ -17,25 +13,38 @@ class GraphQLVisitor(rootQuery: RootQuery) : QueryVisitor(rootQuery) {
     }
 
     override fun visitRootQuery(rootQuery: RootQuery) {
+        builder += rootQuery.type.toGraphQlString()
+        if (rootQuery.name.isNotEmpty())
+            builder += rootQuery.name + " "
         builder += "{\n"
         super.visitRootQuery(rootQuery)
         builder += "}\n"
     }
 
     override fun visitQuery(query: InnerQuery, level: Int) {
-        builder += "${getIndent(level)}${query.name}"
-        if (query.parameter.isNotEmpty()) {
-            val joiner = StringJoiner(", ", "(", ")")
-            query.parameter.forEach {
-                joiner.add("${it.key}: ${it.value}")
-            }
-            builder += joiner.toString()
+        builder += getIndent(level)
+        if (query.alias.isNotEmpty()) {
+            builder += "${query.alias}: "
         }
+        builder += query.name
+        builder += buildParameterString(query.parameter)
         if (query.elements.isNotEmpty()) {
             appendChilds(query, level)
-        } else {
         }
         builder += "\n"
+    }
+
+    private fun buildParameterString(parameters: Map<String, String>): String {
+        return if (parameters.isNotEmpty()) {
+            val joiner = StringJoiner(", ", "(", ")")
+            parameters.forEach {
+                joiner.add("${it.key}: ${it.value}")
+            }
+            joiner.toString()
+        } else {
+            ""
+        }
+
     }
 
     private fun appendChilds(query: InnerQuery, level: Int) {

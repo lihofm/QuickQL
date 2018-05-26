@@ -1,9 +1,11 @@
 package de.beatbrot.quickql.model
 
-class QueryBuilder(private val parent: Query) {
+class QueryBuilder {
+    internal val queries: MutableList<InnerQuery> = ArrayList()
+
     operator fun get(name: String): InnerQuery {
-        val obj = InnerQuery(name)
-        parent += obj
-        return obj
+        val query = InnerQuery(name)
+        queries.add(query)
+        return query
     }
 }
