@@ -14,7 +14,7 @@ class GraphQLVisitor(rootQuery: RootQuery, private val indent: String = "    ") 
 
     override fun visitRootQuery(rootQuery: RootQuery) {
         builder += rootQuery.type.toGraphQlString()
-        if (rootQuery.name.isNotEmpty())
+        if (rootQuery.name != null)
             builder += rootQuery.name + " "
         builder += "{\n"
         super.visitRootQuery(rootQuery)
@@ -23,7 +23,7 @@ class GraphQLVisitor(rootQuery: RootQuery, private val indent: String = "    ") 
 
     override fun visitQuery(query: InnerQuery, level: Int) {
         builder += getIndent(level)
-        if (query.alias.isNotEmpty()) {
+        if (query.alias != null) {
             builder += "${query.alias}: "
         }
         builder += query.name

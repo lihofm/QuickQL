@@ -2,9 +2,11 @@ package de.beatbrot.quickql.model
 
 class InnerQuery(val name: String) : Query() {
     var parameter: MutableMap<String, String> = HashMap()
-    var alias: String = ""
+        private set
+    var alias: String? = null
+        private set
 
-    operator fun invoke(vararg param: Pair<String, Any>,alias: String = "", query: Query.() -> Unit = {}) {
+    operator fun invoke(vararg param: Pair<String, Any>, alias: String? = null, query: Query.() -> Unit = {}) {
         fetchParamsFromFunction(param)
         this.alias = alias
         fetchElementsFromFunction(query)

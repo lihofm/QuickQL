@@ -1,6 +1,7 @@
 package de.beatbrot.quickql.request.executor
 
 import de.beatbrot.quickql.model.RootQuery
+import de.beatbrot.quickql.request.executor.exception.HttpStatusException
 import de.beatbrot.quickql.visitor.GraphQLVisitor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -18,6 +19,10 @@ abstract class OkHttpQueryExecutor(protected val url: String, private val wrapIn
         val request = createRequest(if (wrapInJson) wrapInJson(string) else string)
 
         val response = client.newCall(request).execute()
+        val responseCode = response.code()
+        if (responseCode >= 300) {
+            throw HttpStatusException(responseCode)
+        }
         return response.body()!!.string()
     }
 

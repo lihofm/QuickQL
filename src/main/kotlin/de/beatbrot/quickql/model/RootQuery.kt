@@ -1,18 +1,8 @@
 package de.beatbrot.quickql.model
 
-enum class QueryType {
-    QUERY, MUTATION, SUBSCRIPTION, NONE;
 
-    fun toGraphQlString(): String {
-        return if (this == NONE) {
-            ""
-        } else {
-            name.toLowerCase() + " "
-        }
-    }
-}
 
-class RootQuery(val type: QueryType = QueryType.NONE, val name: String = "", any: Query.() -> Unit) : Query() {
+class RootQuery(val type: QueryType = QueryType.NONE, val name: String? = null, any: Query.() -> Unit) : Query() {
     init {
         fetchElementsFromFunction(any)
     }
