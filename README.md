@@ -1,3 +1,4 @@
+![Travis](https://img.shields.io/travis/USER/REPO.svg)
 # QuickQL
 QuickQL tries to implement a subset of the GraphQL operation-language as a DSL in Kotlin.
 
