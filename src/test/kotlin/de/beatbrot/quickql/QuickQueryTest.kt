@@ -1,7 +1,7 @@
 package de.beatbrot.quickql
 
-import de.beatbrot.quickql.model.QueryType
-import de.beatbrot.quickql.model.RootQuery
+import de.beatbrot.quickql.model.OperationType
+import de.beatbrot.quickql.model.RootOperation
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
@@ -13,8 +13,8 @@ object QuickQueryTest : Spek({
             val first = query {
                 ql["Hello"]
             }
-            val second = RootQuery(QueryType.QUERY) {
-                ql["Hello"];
+            val second = RootOperation(OperationType.QUERY) {
+                ql["Hello"]
             }
 
             it("Should result in the same object") {
@@ -26,7 +26,7 @@ object QuickQueryTest : Spek({
             val first = subscription {
                 ql["hello"]
             }
-            val second = RootQuery(QueryType.SUBSCRIPTION) {
+            val second = RootOperation(OperationType.SUBSCRIPTION) {
                 ql["hello"]
             }
             it("Should give the same object") {
@@ -37,7 +37,7 @@ object QuickQueryTest : Spek({
             val first = mutation {
                 ql["hello"]
             }
-            val second = RootQuery(QueryType.MUTATION) {
+            val second = RootOperation(OperationType.MUTATION) {
                 ql["hello"]
             }
             it("Should be the same") {
@@ -48,7 +48,7 @@ object QuickQueryTest : Spek({
             val first = query("demo") {
                 ql["hello"]
             }
-            val second = RootQuery(QueryType.QUERY, "demo") {
+            val second = RootOperation(OperationType.QUERY, "demo") {
                 ql["hello"]
             }
 

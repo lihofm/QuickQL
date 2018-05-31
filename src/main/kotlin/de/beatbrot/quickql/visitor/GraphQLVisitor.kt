@@ -1,37 +1,43 @@
 package de.beatbrot.quickql.visitor
 
-import de.beatbrot.quickql.model.InnerQuery
-import de.beatbrot.quickql.model.RootQuery
+import de.beatbrot.quickql.model.Field
+import de.beatbrot.quickql.model.RootOperation
 import java.util.*
 
-class GraphQLVisitor(rootQuery: RootQuery, private val indent: String = "    ") : QueryVisitor(rootQuery) {
+class GraphQLVisitor(private val indent: String = defaultIndent) : OperationVisitor<String>() {
+    companion object {
+        const val defaultIndent = "    "// 4 spaces
+    }
+
     private val builder: StringBuilder = StringBuilder()
 
-    fun generate(): String {
-        visitAll()
+    override fun visitAll(rootQuery: RootOperation): String {
+        super.visitAll(rootQuery)
         return builder.toString()
     }
 
-    override fun visitRootQuery(rootQuery: RootQuery) {
-        builder += rootQuery.type.toGraphQlString()
-        if (rootQuery.name != null)
+    override fun visitRootQuery(rootQuery: RootOperation) {
+        if (rootQuery.name != null) {
+            builder += rootQuery.type.toGraphQlString()
             builder += rootQuery.name + " "
+        }
         builder += "{\n"
         super.visitRootQuery(rootQuery)
         builder += "}\n"
     }
 
-    override fun visitQuery(query: InnerQuery, level: Int) {
+    override fun visitQuery(query: Field, level: Int) {
         builder += getIndent(level)
         if (query.alias != null) {
             builder += "${query.alias}: "
         }
         builder += query.name
-        builder += buildParameterString(query.parameter)
-        if (query.elements.isNotEmpty()) {
+        builder += buildParameterString(query.arguments)
+        if (query.childs.isNotEmpty()) {
             appendChilds(query, level)
+        } else {
+            builder += "\n"
         }
-        builder += "\n"
     }
 
     private fun buildParameterString(parameters: Map<String, String>): String {
@@ -47,7 +53,7 @@ class GraphQLVisitor(rootQuery: RootQuery, private val indent: String = "    ") 
 
     }
 
-    private fun appendChilds(query: InnerQuery, level: Int) {
+    private fun appendChilds(query: Field, level: Int) {
         builder += " {\n"
         super.visitQuery(query, level)
         builder += "${getIndent(level)}}\n"

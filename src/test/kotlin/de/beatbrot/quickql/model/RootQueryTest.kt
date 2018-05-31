@@ -10,11 +10,11 @@ import kotlin.test.assertFalse
 
 object RootQueryTest : Spek({
     given("We have root-queries that we want to compare") {
-        val first = RootQuery {
+        val first = RootOperation {
             ql["inner"]
         }
         on("The root-queries are the same") {
-            val second = RootQuery {
+            val second = RootOperation {
                 ql["inner"]
             }
             it("Should return true for equals, hashCode and toString") {
@@ -22,7 +22,7 @@ object RootQueryTest : Spek({
             }
         }
         on("The root-queries are not the same") {
-            val second = RootQuery {
+            val second = RootOperation {
                 ql["outer"]
             }
             it("Should return false for equals, hashCode and toString") {
@@ -30,10 +30,10 @@ object RootQueryTest : Spek({
             }
         }
         on("The objects we are comparing are completely different") {
-            val firstRt = RootQuery {
+            val firstRt = RootOperation {
 
             }
-            val builder = QueryBuilder()
+            val builder = OperationBuilder()
             builder["demo"]
             val second = builder.queries[0]
 
